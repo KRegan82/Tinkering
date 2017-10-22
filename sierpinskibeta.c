@@ -23,8 +23,8 @@ int main(void)
     BITMAPINFOHEADER bi;
 
     //calculate header and header info values to write using structs in bmp.h
-    bi.biWidth = ((sizeof(RGBTRIPLE) * (2 * n)) + (sizeof(RGBTRIPLE) * 4));
-    bi.biHeight = ((sizeof(RGBTRIPLE) * (2 * n)) + (sizeof(RGBTRIPLE) * 4));
+    bi.biWidth = (n * 2) + 4;
+    bi.biHeight = (n * 2) + 4;
     //int width = bi.biWidth;
     //int height = abs(bi.biHeight);
 
@@ -32,7 +32,7 @@ int main(void)
     int pad = (4 - (bi.biWidth * sizeof(RGBTRIPLE)) % 4) % 4;
 
     // write new image size
-    bi.biSizeImage = bi.biHeight * (bi.biWidth + pad);
+    bi.biSizeImage = bi.biHeight * ((bi.biWidth * sizeof(RGBTRIPLE)) + pad);
 
     // write new file size
     bf.bfSize = bi.biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
@@ -63,10 +63,11 @@ int main(void)
     int body[n][n];
     int print = 0;
 
+
     //create rgp triple for manipulation
     RGBTRIPLE pixel;
     //add buffer lines to top of .bmp
-    for(int i = 0; i< ((n*2)+2); i++)
+    for(int i = 0; i< ((n*2)+4); i++)
     {
         pixel.rgbtRed = 0xff;
         pixel.rgbtBlue = 0xff;
@@ -81,7 +82,7 @@ int main(void)
     }
 
 
-    for(int i = 0; i< ((n*2)+2); i++)
+    for(int i = 0; i< ((n*2)+4); i++)
     {
         pixel.rgbtRed = 0xff;
         pixel.rgbtBlue = 0xff;
@@ -96,7 +97,8 @@ int main(void)
     // iterate over the area and print necessary digits
     for(int i = 0; i < n ; i++)
     {
-        for(int j = 0; j <( n ) - i ; j++ )
+        int blankCount = (n + 1) - i;
+        for(int j = 0; j < blankCount; j++ )
         {
             pixel.rgbtRed = 0xff;
             pixel.rgbtBlue = 0xff;
@@ -145,7 +147,7 @@ int main(void)
             }
 
         }
-        for(int j = 0; j <( n ) - i ; j++ )
+        for(int j = 0; j < blankCount; j++ )
             {
                 pixel.rgbtRed = 0xff;
                 pixel.rgbtBlue = 0xff;
@@ -157,7 +159,7 @@ int main(void)
         {
             fputc(0x00, outfile);
         }
-        for(int j = 0; j <( n ) - i ; j++ )
+        for(int j = 0; j <blankCount ; j++ )
         {
             pixel.rgbtRed = 0xff;
             pixel.rgbtBlue = 0xff;
@@ -206,7 +208,7 @@ int main(void)
             }
 
         }
-        for(int j = 0; j <( n ) - i ; j++ )
+        for(int j = 0; j < blankCount; j++ )
             {
                 pixel.rgbtRed = 0xff;
                 pixel.rgbtBlue = 0xff;
@@ -221,7 +223,7 @@ int main(void)
 
     }
     // add buffer lines to bottom of .bmp
-    for(int i = 0; i< ((n*2)+2); i++)
+    for(int i = 0; i< ((n*2)+4); i++)
     {
         pixel.rgbtRed = 0xff;
         pixel.rgbtBlue = 0xff;
@@ -233,7 +235,7 @@ int main(void)
     {
         fputc(0x00, outfile);
     }
-    for(int i = 0; i< ((n*2)+2); i++)
+    for(int i = 0; i< ((n*2)+4); i++)
     {
         pixel.rgbtRed = 0xff;
         pixel.rgbtBlue = 0xff;
